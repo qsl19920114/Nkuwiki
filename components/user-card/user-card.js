@@ -160,17 +160,8 @@ Component({
       
       const { openid } = this.data.formattedUser;
       if (openid) {
-        // 直接导航到用户个人主页，不使用临时存储
         wx.navigateTo({
-          url: `/pages/index/userprofile/userprofile?openid=${openid}`,
-          fail: (err) => {
-            console.error('跳转到用户主页失败:', err);
-            
-            // 如果无法导航，则使用 redirectTo，但不再设置临时 openid
-            wx.redirectTo({
-              url: `/pages/index/userprofile/userprofile?openid=${openid}`
-            });
-          }
+          url: `/pages/profile/profile?id=${openid}`
         });
       }
     },
@@ -314,6 +305,49 @@ Component({
       wx.navigateTo({
         url: '/pages/profile/points/points'
       });
+    },
+
+    // 点击头像或用户名
+    onUserTap() {
+      const { openid } = this.data.formattedUser;
+      if (!openid) return;
+      
+      wx.navigateTo({
+        url: `/pages/profile/profile?id=${openid}`,
+        fail: () => {
+          storage.set('temp_profile_openid', openid);
+          wx.redirectTo({
+            url: `/pages/profile/profile?id=${openid}`
+          });
+        }
+      });
+    },
+    
+    // 关注/取消关注
+    async onFollowTap() {
+      const { openid, isFollowed } = this.data.formattedUser;
+      if (!openid) return;
+      
+      const currentOpenid = storage.get('openid');
+      if (!currentOpenid) {
+        this.showToast('请先登录', 'error');
+        return;
+      }
+      
+      // 不能关注自己
+      if (openid === currentOpenid) {
+        this.showToast('不能关注自己', 'error');
+        return;
+      }
+      
+      try {
+        await this._toggleFollow({
+          followed_id: openid
+        });
+      } catch (err) {
+        console.error('关注操作失败:', err);
+        this.showToast('操作失败', 'error');
+      }
     }
   }
 }); 

@@ -55,11 +55,11 @@ Component({
       if (!openid) return;
       
       wx.navigateTo({
-        url: `/pages/index/userprofile/userprofile?openid=${openid}`,
+        url: `/pages/profile/profile?id=${openid}`,
         fail: () => {
-          // 如果导航失败，尝试使用redirectTo
+          storage.set('temp_profile_openid', openid);
           wx.redirectTo({
-            url: `/pages/index/userprofile/userprofile?openid=${openid}`
+            url: `/pages/profile/profile?id=${openid}`
           });
         }
       });

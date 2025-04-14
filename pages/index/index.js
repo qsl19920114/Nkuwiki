@@ -151,7 +151,6 @@ Page({
       });
     }
   },
-  
   // 处理发帖按钮点击
   onCreatePost() {
     // 使用_checkLogin函数检查登录状态
@@ -189,29 +188,4 @@ Page({
       });
     }
   },
-  
-  // 处理用户头像或名字点击，跳转到用户个人主页
-  onUserTap(e) {
-    const { openid } = e.detail;
-    if (!openid) return;
-    
-    console.debug('跳转到用户主页，openid:', openid);
-    
-    // 导航到用户个人主页
-    wx.navigateTo({
-      url: `/pages/index/userprofile/userprofile?openid=${openid}`,
-      fail: (err) => {
-        console.error('跳转到用户个人主页失败:', err);
-        // 如果导航失败，尝试通过事件通知处理
-        const eventChannel = this.getOpenerEventChannel();
-        if (eventChannel) {
-          try {
-            eventChannel.emit('userTap', { openid });
-          } catch (e) {
-            console.error('发送事件失败:', e);
-          }
-        }
-      }
-    });
-  }
 });

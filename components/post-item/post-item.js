@@ -215,33 +215,25 @@ Component({
       const openid = post?.openid || (post?.user?.openid);
       
       if (openid) {
-        console.debug('头像点击，触发事件，openid:', openid);
+        console.debug('头像点击跳转，openid:', openid);
         
-        // 触发avatartap事件，让父组件处理跳转
-        this.triggerEvent('avatartap', {
-          openid: openid,
-          post: post
+        // 将openid存入缓存，防止URL参数失效时作为备用
+        storage.set('temp_profile_openid', openid);
+        
+        // 使用reLaunch跳转到profile页面，直接在URL中传递openid参数
+        wx.reLaunch({
+          url: `/pages/profile/profile?openid=${openid}`,
+          fail: (err) => {
+            console.error('跳转到个人主页失败:', err);
+          }
         });
       }
     },
     
     // 点击作者名称
     _onAuthorTap() {
-      const post = this.properties.post;
-      if (!post) return;
-      
-      // 首先尝试直接从post对象获取openid
-      const openid = post?.openid || (post?.user?.openid);
-      
-      if (openid) {
-        console.debug('作者名点击，触发事件，openid:', openid);
-        
-        // 触发authortap事件，让父组件处理跳转
-        this.triggerEvent('authortap', {
-          openid: openid,
-          post: post
-        });
-      }
+      // 复用头像点击方法
+      this._onAvatarTap();
     },
     
     // 点击帖子

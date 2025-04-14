@@ -21,8 +21,6 @@
         showComment="{{true}}"
         showFollow="{{true}}"
         index="{{index}}"
-        bindavatartap="onUserTap"
-        bindauthortap="onUserTap"
       />
     </block>
   </view>

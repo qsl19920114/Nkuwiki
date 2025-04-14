@@ -113,29 +113,6 @@ Component({
   },
 
   methods: {
-    // 处理用户头像点击
-    onUserTap(e) {
-      // 从post-item组件中获取post信息
-      const postId = e.currentTarget.dataset.postId;
-      let post = null;
-      
-      // 查找对应的帖子信息
-      if (postId) {
-        post = this.data.post.find(item => item.id === postId);
-      } else {
-        // 如果没有postId，直接使用事件的信息
-        post = e.detail.post || e.detail;
-      }
-      
-      // 获取用户openid
-      const openid = post?.openid || post?.user?.openid || e.detail.openid;
-      
-      if (!openid) return;
-      
-      // 触发事件给父组件
-      this.triggerEvent('usertap', { openid });
-    },
-  
     // 重置分页
     resetPagination() {
       this.setData({
