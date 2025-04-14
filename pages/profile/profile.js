@@ -83,26 +83,7 @@ Page({
   },
 
   async onShow() {
-    // 检查是否有从其他页面传入的临时openid
-    try {
-      const tempOpenid = this.getStorage('temp_profile_openid');
-      const currentOpenid = storage.get('openid');
-      
-      if (tempOpenid && tempOpenid !== currentOpenid) {
-        console.debug('检测到临时openid:', tempOpenid, '当前用户openid:', currentOpenid);
-        
-        // 清除临时openid，避免反复加载
-        this.setStorage('temp_profile_openid', null);
-        
-        // 加载目标用户资料
-        await this.syncUserAndInitPage(tempOpenid);
-        return;
-      }
-    } catch (err) {
-      console.debug('读取临时openid失败:', err);
-    }
-    
-    // 只检查通知状态，用户信息由user-card组件自行检查刷新
+    // 只检查通知状态，不再检查临时openid
     this.checkUnreadNotifications();
   },
 
@@ -325,6 +306,7 @@ Page({
     if (!this.data.userInfo) return;
     this.navigateTo('/pages/profile/edit/edit');
   },
+
   // 处理菜单项点击路由
   _routeMenuItem(item) {
     if (!item) return;
@@ -341,4 +323,9 @@ Page({
       this.navigateTo(item.path);
     }
   },
+
+  // 重试
+  onRetry() {
+    this.syncUserAndInitPage();
+  }
 });

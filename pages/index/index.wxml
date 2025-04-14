@@ -33,6 +33,7 @@
     <post-list 
       id="postList"
       filter="{{filter}}"
+      bindusertap="onUserTap"
     />
   </view>
   
